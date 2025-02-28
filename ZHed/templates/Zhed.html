@@ -1,0 +1,216 @@
+{% extends "master.html" %}
+
+{% load static %}
+
+
+{% block title %}
+Zu Hause - ZHed
+{% endblock %}
+
+{% block content %}
+<div class="container log-container d-flex ">
+  <div class="row">
+    <div class="col-sm-12 bg-black">
+      <img id="logon" class="swing rounded-pill" src="{% static 'admin/img/ZHH Logo.png' %}" alt="Logo" width="150">
+    </div>
+  </div>
+</div>
+
+<div class="container mt-2 text-center">
+  <div class="row">
+      <div class="col bg-black text-white"><strong></strong></div>
+      <div class="col bg-black text-white"><strong>{{ player_name }}</strong></div>
+      <div class="col bg-black text-white"><strong>Level: </strong>{{ player_level  }}</div>
+      <div class="col bg-black text-white"><strong>Score: </strong>{{ player_score }}</div>
+    </div>
+</div>
+
+<div class="container bg-black text-white pt-5 text-center" style="padding:250px 40px;">
+  <div class="row">
+    <h4>Guess the Word:</h4>
+    <div class="col bg-warning col-sm-6" {% if not game_state %} hidden {% endif %}>
+      <p id="word-display">
+        <!-- Show underscores for unguessed letters -->
+        {% for letter in word %}
+          {% if letter in correct_guesses %}
+            {{ letter }}
+          {% else %}
+            __
+          {% endif %}
+        {% endfor %}
+      </p>
+    </div>
+
+      <!-- Display the current part of the house or wrong guesses -->
+      <div class="col house bg-dark col-sm-6">
+        <h5>ZuHause</h5>
+        {% if wrong_guesses == 1 %}
+        <img src="{% static 'admin/img/mod0.png' %}" alt="structure1" class="img">
+        {% elif wrong_guesses == 2 %}
+        <img src="{% static 'admin/img/mod1.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses == 3 %}
+        <img src="{% static 'admin/img/mod2.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses == 4 %}
+        <img src="{% static 'admin/img/mod3.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses == 5 %}
+        <img src="{% static 'admin/img/mod4.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses == 6 %}
+        <img src="{% static 'admin/img/mod5.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses == 7 %}
+        <img src="{% static 'admin/img/mod6.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses == 8 %}
+        <img src="{% static 'admin/img/mod7.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses == 9 %}
+        <img src="{% static 'admin/img/mod8.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses == 10 %}
+        <img src="{% static 'admin/img/mod9.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses == 11 %}
+        <img src="{% static 'admin/img/mod10.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses == 12 %}
+        <img src="{% static 'admin/img/mod11.png' %}" alt="structure2" class="img">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- The Modal -->
+<div class="modal fade" id="myModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm-down">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header bg-black d-flex text-center w-100">
+        <h4 class="modal-title w-100">Leaderboard</h4>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body bg-black text-white text-center">
+        {% if scores %}
+        <ul class="list-group">
+          {% for player in scores %}
+          <li class="list-group-item">{{ player.name }}: {{ player.score }} points</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer bg-black d-flex justify-content-center w-100"> 
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  <div class="container mt-2">
+    <div class="row">
+        <!-- Display Hint Logic -->
+        <div class="col bg-black text-warning">
+          {% if show_hint %}
+          <strong>Hint: </strong>{{ get_hint }}  
+          {% else %}
+        <!-- Hint Form -->
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="show_hint" class="btn btn-outline-dark" 
+        {% if not game_state %} disabled {% endif %}
+        >Hint</button>
+      </form>
+          {% endif %}
+        </div>
+      </div>
+</div>
+
+<!-- Buttons -->
+  <div class="container mt-4 d-flex justify-content-center">
+    <div class="btn-group gap-3">
+
+      <!-- Score Button -->
+      <form method="post">
+        {% csrf_token %}
+      <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myModal" {% if game_state %} disabled {% endif %}>
+        
+        Score
+      </button>
+    </form>
+
+      <!-- Start Button -->
+      <form method="post">
+        {% csrf_token %}
+      <button type="submit" name="start_game" class="btn btn-outline-dark"
+      {% if game_state %} disabled {% endif %}
+      >Start</button>
+      </form>
+
+      <!-- Pause Button -->
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" name="pause_game" class="btn btn-outline-dark"
+      {% if not game_state %} disabled {% endif %}
+      >Pause</button>
+    </form>
+      
+<!-- Guess Form -->
+ <form method="post" id="letter-form">
+  {% csrf_token %}
+  <input type="text" name="letter" id="letter-input" maxlength="1" style="display: none;">
+  <button type="submit" style="display: none;">Guess</button>
+ </form>
+
+ <!-- Display game-over message if game is lost -->
+{% if wrong_guesses >= MAX_WRONG_GUESSES %}
+<div class="alert alert-danger" role="alert">
+  <h4>Game Over!</h4>
+  <p>You've lost! The word was: <strong>{{ word }}</strong></p>
+  <a href="{% url 'zhed' %}" class="btn btn-primary">Try Again</a>
+</div>
+{% endif %}
+
+<!-- Exit Button with Confirmation Modal -->
+    <!-- Trigger Modal -->
+    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exitModal">Exit</button>
+
+    <!-- Exit Confirmation Modal -->
+    <div class="modal fade" id="exitModal" tabindex="-1" aria-labelledby="exitModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm-down">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header bg-black">
+            <h5 class="modal-title text-center" id="exitModalLabel">Are you sure you want to exit?</h5>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="modal-footer bg-black">
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+            <form method="post" action="{% url 'main' %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Yes, Exit</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </div>
+
+
+
+<script>
+
+// Keydown event listener for letter guesses
+document.addEventListener('keydown', function(event) {
+    if (event.key.match(/[a-zA-Z]/)) {
+        var letterInput = document.getElementById('letter-input');
+        letterInput.value = event.key.toLowerCase();
+        document.getElementById('letter-form').submit();
+    }
+});
+
+</script>  
+
+{% endblock %} 

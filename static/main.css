@@ -1,0 +1,51 @@
+body {
+    background-color: black;  /* Black background */
+    color: #ffffff;  /* White text color for better contrast */
+  }
+  
+  .hidden {
+    visibility: hidden;  /* Makes the button invisible but keeps its layout */
+  }
+
+  @media (max-width: 1050px) { 
+    .logo-container img {
+        max-width: 100px !important; /* Smaller logo */
+    }
+    .log-container img {
+      max-width: 100px !important; /* Smaller logo */
+  }
+    .button-container {
+        top: 50% !important; /* Push the button slightly lower */
+    }
+  
+    .button-container button {
+        padding: 10px 20px !important; /* Reduce button padding */
+        font-size: 18px !important; /* Smaller text */
+    }
+  
+    .footer-container {
+        font-size: 15px !important; /* Even smaller font */
+    }
+    
+
+  }
+  
+  
+  /* Keyframe animation for swinging the logo */
+  @keyframes swing {
+    0% {
+      transform: rotate(-30deg); /* Start at left */
+    }
+    50% {
+      transform: rotate(30deg); /* Swing to the right */
+    }
+    100% {
+      transform: rotate(-30deg); /* Swing back to the left */
+    }
+  }
+  
+  /* Apply animation and set the pivot to the top */
+  .logo-container img {
+    animation: swing 2s ease-in-out infinite; /* Infinite swing animation */
+    transform-origin: top center; /* Pivot from top */
+  }

@@ -1,0 +1,39 @@
+{% extends "master.html" %}
+
+{% load static %}
+
+
+{% block title %}
+Zu Hause - ZHed
+{% endblock %}
+
+{% block content %}
+
+  <!-- Word Completion Modal -->
+  <div class="modal fade" id="wordCompleteModal" tabindex="-1" aria-labelledby="wordCompleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm-down">
+      <div class="modal-content bg-black text-white">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h5 class="modal-title" id="wordCompleteLabel">Well Done!</h5>
+        </div>
+  
+        <!-- Modal Body -->
+        <div class="modal-body text-center">
+          <p><strong>Definition:</strong> <span id="wordDefinition"></span></p>
+          <p><strong>Translation:</strong> <span id="wordTranslation"></span></p>
+          <p><strong>Points Earned:</strong> <span id="pointsEarned"></span></p>
+        </div>
+  
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Exit</button>
+          <button type="button" class="btn btn-success" id="nextWordBtn">Next Word</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+
+{% endblock %} 

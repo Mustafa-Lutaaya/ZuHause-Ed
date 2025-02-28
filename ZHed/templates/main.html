@@ -1,0 +1,74 @@
+{% extends "master.html" %}
+
+{% load static %}
+
+
+{% block title %}
+Zu Hause 
+{% endblock %}
+
+{% block content %}
+<div class="container logo-container mt-1 d-flex justify-content-center">
+  <div class="row">
+    <div class="col-sm-12 bg-black">
+      <img id="logon" class="swing rounded-pill" src="{% static 'admin/img/ZHH Logo.png' %}" alt="Logo" width="200">
+    </div>
+  </div>
+</div>
+
+<div class="container button-container mt-3 d-flex justify-content-center">
+  <div class="row">
+    <div class="col-sm-12 bg-black ">
+    </div>
+  </div>
+</div>
+
+  <div class="container button-container mt-5 pt-5 d-flex justify-content-center">
+    <div class="row">
+      <div class="col-sm-12 bg-black py-5">
+        <button type="button" class="btn btn-outline-dark btn-lg" data-bs-toggle="modal" data-bs-target="#myModal">
+          Start
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- The Modal -->
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog modal-dialog-centered modal-sm-down">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header bg-black d-flex text-center w-100">
+        <h4 class="modal-title w-100">WILKOMEN ZUHAUSE </h4>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body bg-black text-white text-center">
+        <form method="post" action="{% url 'zhed' %}" class="d-flex flex-column align-items-center w-100">
+          {% csrf_token %}
+          <h5></h5>
+          <input type="text" name="name" class="form-control mb-3 text-center" placeholder="Enter Your Name Here & Press Play" style="max-width: 80%;">
+          <button type="submit" class="btn btn-outline-dark btn-md">Play</button>
+        </form>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer bg-black d-flex justify-content-center w-100"> 
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  <div class="container footer-container mt-5 pb-3 d-flex justify-content-center fixed-bottom">
+    <div class="row">
+      <div class="col-sm-12 bg-black">
+        <p>A print(rain) game.</p>
+      </div>
+    </div>
+  </div>
+
+{% endblock %} 
