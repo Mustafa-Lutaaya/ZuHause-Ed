@@ -11,6 +11,6 @@ class WordAdmin(admin.ModelAdmin):
 # Player Model Registration & Admin Panel Appearance Customization
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ("name", "score", "level", "correct_guesses_count") # Specifies Columns To Display in The Admin List View
+    list_display = ("name", "score", "level", "correct_guesses_count",) # Specifies Columns To Display in The Admin List View
     search_fields = ("name",) # Allows Search By These Fiels In The Admin Interface
-
+    

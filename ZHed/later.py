@@ -5,11 +5,9 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-
-zone, _ = States.objects.get_or_create(id=1)
-
 def main(request):
     return render(request, 'main.html')
+
 
 
 def zhed(request):
@@ -19,7 +17,7 @@ def zhed(request):
    # Ensure session variables are properly initialized
     if "gamestate" not in request.session:
         request.session["gamestate"] = zone.gamestate
-    if "halfgamestate" not in request.session:
+    if "halfgamestate" not in request.session: 
         request.session["halfgamestate"] = zone.halfgamestate
     if "dormant" not in request.session:
         request.session["dormant"] = zone.dormant
@@ -36,39 +34,38 @@ def zhed(request):
             request.session["player_name"] = player.name  # Store player in session
             request.session["player_score"] = player.score
             request.session["player_level"] = player.level
+            request.session["played_words"] = list(player.played_words.values_list("id", flat=True))  # Stores list of word IDs
             request.session['show_hint'] = False  # By default, don't show hint
 
+            messages.success(request, f"Welcome, {player_name}!" if created else f"Welcome back, {player_name}!")
+            
+            
             # Game is inactive after login
             zone.gamestate = False
             zone.halfgamestate = False
             zone.dormant = False
             zone.save()
-
-            messages.success(request, f"Welcome, {player_name}!" if created else f"Welcome back, {player_name}!")
             
             return redirect("zhed")  # Refresh the page
     
-    MAX_WRONG_GUESSES = 12  # Number of wrong attempts before game over
+    MAX_WRONG_GUESSES = 13  # Number of wrong attempts before game over
+
     player_name = request.session.get("player_name")
     player = Player.objects.get(name=player_name)
     played_words = player.played_words.all()
-    scores = list(Player.objects.order_by("-score").values("name", "score"))  # Convert to list
     word = Word.objects.exclude(id__in=played_words.values_list("id", flat=True)).first()
-    cgw = ["__" for i in word.word]  # Create a list with underscores for each letter in the word
-
-
+    scores = list(Player.objects.order_by("-score").values("name", "score"))  # Convert to list
+    
     # Game Start
     if "start_game" in request.POST:
-        request.session["played_words"] = list(player.played_words.values_list("id", flat=True))  # Stores list of word IDs
         zone.gamestate = True
         zone.halfgamestate = False
         zone.dormant = False
         zone.save()
         
-        word = Word.objects.exclude(id__in=played_words.values_list("id", flat=True)).first()
+        
         if word:
-            request.session["cgw"] = ["__" for _ in word.word]  # Create a list with underscores for each letter in the word
-            request.session['word'] = word.word.lower()
+            request.session["word"] = word.word.lower()
             request.session["get_hint"] = word.hint
             request.session["meaning"] = word.meaning
             request.session["translation"] = word.translation
@@ -77,25 +74,16 @@ def zhed(request):
             correct_guesses_count = request.session.get("correct_guesses", [])
             wrong_guesses = request.session.get ("wrong_guesses", []) # Wrong Guesses stored as an Intenger Count
         else:
-            cgw = []
-            request.session['word'] = ''
+            request.session["word"] = ""  
             request.session["get_hint"] = ""
             messages.warning(request, "No new words available!")
-        
-        request.session["wrong_guesses"] = []
-        request.session["correct_guesses"] = []
-        request.session["show_hint"] = False
-        
-        return redirect("zhed") # Reload page to reflect changes
-            
-    #     # request.session.pop("word", None)  # Clear previous word
-    #     # request.session.pop("correct_guesses", None)
-    #     # request.session.pop("wrong_guesses", None)
-
+            return redirect("zhed") # Reload page to reflect changes
+    
     # Guess Letter
     if "letter" in request.POST:
+        cgw = ""
+        # played_words = request.session.get("played_words",[])
         word = request.session.get("word", "")
-        cgw = request.session.get("cgw", ["__" for _ in word])  # Retrieve existing cgw
         correct_guesses = request.session.get("correct_guesses", [])
         correct_guesses_count = request.session.get("correct_guesses", [])
         wrong_guesses = request.session.get ("wrong_guesses", []) # Wrong Guesses stored as an Intenger Count
@@ -107,17 +95,12 @@ def zhed(request):
             if letter in word:
                 if letter not in correct_guesses:
                     correct_guesses.append(letter)
-
-                     # Replace underscores with cmorrectly guessed letters
-                    for index, char in enumerate(word):
-                        if char == letter:
-                            cgw[index] = letter
-
-                    request.session["cgw"] = cgw  # Store the updated cgw in the session
+                    # cgw += letter
                     messages.success(request, f"Great Guess, {player_name}!")
 
             else:
                 wrong_guesses.append(letter)
+                # cgw += "_"
                 messages.success(request, f"Wrong Guess, {player_name}!")
 
                 if len(wrong_guesses) == (MAX_WRONG_GUESSES -5):
@@ -130,22 +113,24 @@ def zhed(request):
             # Check for Win Condition
             if all(l in correct_guesses for l in word):
                 correct_guesses_count.append(word)
-                player.score += 10  # Increment the player's score
-                player.save()  # Save the updated player score
                 zone.gamestate = False  # End game if word is fully guessed
                 zone.dormant = True
                 zone.save()
 
                 word_obj = Word.objects.get(word=word)  # Get the actual word object
-                player.played_words.add(word_obj)  # Store the word as played**
+                player.played_words.add(word_obj)  # **✅ Store the word as played**
                 request.session["played_words"] = list(player.played_words.values_list("id", flat=True))
-                word = request.session.get("word", "")
+
+                # messages.success(request, f"Congratulations {player_name}, you guessed the word!")
             
             # Check if the game is over due to too many wrong guesses
-            if len(wrong_guesses) >=  MAX_WRONG_GUESSES:
+            if len(wrong_guesses) >  MAX_WRONG_GUESSES:
                 zone.gamestate = False
                 zone.dormant = True
                 zone.save()
+
+                # messages.error(request, f"Game Over, {player_name}. The word was '{word.upper()}'.")
+
             return redirect("zhed")
 
     # Show hint request handling
@@ -159,30 +144,37 @@ def zhed(request):
         zone.save()
         request.session['show_hint'] = False  # By default, don't show hint
         return redirect("zhed") # Reload page to reflect changes
+    
+    # messages.error(request, f"Game Over, {player_name}. The word was '{word.upper()}'.")
+
+    # **Ensure session data is updated**
+    request.session["player_score"] = player.score
+    request.session["player_level"] = player.level
 
     # Ensure player is logged for updated diplays
     player_name = request.session.get("player_name")
     player = Player.objects.get(name=player_name)
-    scores = list(Player.objects.order_by("-score").values("name", "score"))  # Convert to list
     
     # Ensure session data is up-to-date
     request.session["player_score"] = player.score
     request.session["player_level"] = player.level
-    request.session["player_name"] = player.name
-    
+    request.session["player_name"] = player.name  
 
+    
     return render(request, 'Zhed.html', {
         "gamestate": zone.gamestate,
         "halfgamestate": zone.halfgamestate,
         "dormant": zone.dormant,
-        'word': request.session.get("word", ""),
-        'cgw': request.session.get("cgw", ["__" for _ in request.session.get("word", "")]),
         'player_name': player_name,
         'player_score': request.session["player_score"],
         'player_level': request.session["player_level"],
         'scores': scores,
+        'cgw': cgw,
+        'word': word.word.lower(),
         'get_hint': request.session.get('get_hint', ''),
         'wrong_guesses': request.session.get('wrong_guesses',[]),
         'correct_guesses': request.session.get('correct_guesses',[]),
         'show_hint': request.session.get('show_hint', False)
             })
+
+

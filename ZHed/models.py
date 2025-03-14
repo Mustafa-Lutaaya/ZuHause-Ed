@@ -29,5 +29,34 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
+# States Model
+class States(models.Model):
+    gamestate = models.BooleanField(default=True)
+    halfgamestate = models.BooleanField(default=False)
+    dormant = models.BooleanField(default=False)
+
+    def set_gamestate(self):
+        self.gamestate = True
+        self.halfgamestate = False
+        self.dormant = False
+        self.save()
+    
+    def set_halfgamestate(self):
+        self.gamestate = False
+        self.halfgamestate = True
+        self.dormant = False
+        self.save()
+
+    def set_dormantstate(self):
+        self.gamestate = False
+        self.halfgamestate = False
+        self.dormant = True
+        self.save()
+
+        
+    def __str__(self):
+        return f"GameState: {self.gamestate}, HalfGameState: {self.halfgamestate}, Dormant: {self.dormant}"
+
+
 # SHORT NOTES
 # Django Models are Python Classes That Define The Structure Of The Database.

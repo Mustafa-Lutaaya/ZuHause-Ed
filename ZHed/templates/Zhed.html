@@ -2,7 +2,6 @@
 
 {% load static %}
 
-
 {% block title %}
 Zu Hause - ZHed
 {% endblock %}
@@ -25,56 +24,65 @@ Zu Hause - ZHed
     </div>
 </div>
 
-<div class="container bg-black text-white pt-5 text-center" style="padding:250px 40px;">
-  <div class="row">
+<div class="container-fluid bg-black text-white pt-5 text-center justify-content-center">
+  <div>
     <h4>Guess the Word:</h4>
-    <div class="col bg-warning col-sm-6" {% if not game_state %} hidden {% endif %}>
-      <p id="word-display">
-        <!-- Show underscores for unguessed letters -->
-        {% for letter in word %}
-          {% if letter in correct_guesses %}
-            {{ letter }}
-          {% else %}
-            __
-          {% endif %}
+      <p id="key-display">
+      {% if gamestate %}
+        {% for letter in cgw %}
+          {{ letter }}  
         {% endfor %}
+      {% endif %}
       </p>
-    </div>
+      <form method="post" id="letter-form">
+        {% csrf_token %}
+        <input type="hidden" name="letter" id="letter-input">
+      </form>
+  </div>
 
-      <!-- Display the current part of the house or wrong guesses -->
-      <div class="col house bg-dark col-sm-6">
-        <h5>ZuHause</h5>
-        {% if wrong_guesses == 1 %}
-        <img src="{% static 'admin/img/mod0.png' %}" alt="structure1" class="img">
-        {% elif wrong_guesses == 2 %}
-        <img src="{% static 'admin/img/mod1.png' %}" alt="structure2" class="img">
-        {% elif wrong_guesses == 3 %}
-        <img src="{% static 'admin/img/mod2.png' %}" alt="structure2" class="img">
-        {% elif wrong_guesses == 4 %}
-        <img src="{% static 'admin/img/mod3.png' %}" alt="structure2" class="img">
-        {% elif wrong_guesses == 5 %}
-        <img src="{% static 'admin/img/mod4.png' %}" alt="structure2" class="img">
-        {% elif wrong_guesses == 6 %}
-        <img src="{% static 'admin/img/mod5.png' %}" alt="structure2" class="img">
-        {% elif wrong_guesses == 7 %}
-        <img src="{% static 'admin/img/mod6.png' %}" alt="structure2" class="img">
-        {% elif wrong_guesses == 8 %}
-        <img src="{% static 'admin/img/mod7.png' %}" alt="structure2" class="img">
-        {% elif wrong_guesses == 9 %}
-        <img src="{% static 'admin/img/mod8.png' %}" alt="structure2" class="img">
-        {% elif wrong_guesses == 10 %}
-        <img src="{% static 'admin/img/mod9.png' %}" alt="structure2" class="img">
-        {% elif wrong_guesses == 11 %}
-        <img src="{% static 'admin/img/mod10.png' %}" alt="structure2" class="img">
-        {% elif wrong_guesses == 12 %}
-        <img src="{% static 'admin/img/mod11.png' %}" alt="structure2" class="img">
+      <div>
+        {% if word and correct_guesses and word|make_list|length == correct_guesses|length %}
+        <h4 class="title w-100 text-success">Congratulations! You guessed the word!</h4>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" name="start_game" class="btn btn-outline-success">Play Again</button>
+        </form>
         {% endif %}
-      </div>
-    </div>
-  </div>
+
+        {% if wrong_guesses|length == 1 %}
+        <img src="{% static 'admin/img/mod0.png' %}" alt="structure0" class="img">
+        {% elif wrong_guesses|length == 2 %}
+        <img src="{% static 'admin/img/mod1.png' %}" alt="structure1" class="img">
+        {% elif wrong_guesses|length == 3 %}
+        <img src="{% static 'admin/img/mod2.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses|length == 4 %}
+        <img src="{% static 'admin/img/mod3.png' %}" alt="structure3" class="img">
+        {% elif wrong_guesses|length == 5 %}
+        <img src="{% static 'admin/img/mod4.png' %}" alt="structure4" class="img">
+        {% elif wrong_guesses|length == 6 %}
+        <img src="{% static 'admin/img/mod5.png' %}" alt="structure5" class="img">
+        {% elif wrong_guesses|length == 7 %}
+        <img src="{% static 'admin/img/mod6.png' %}" alt="structure6" class="img">
+        {% elif wrong_guesses|length == 8 %}
+        <img src="{% static 'admin/img/mod7.png' %}" alt="structure7" class="img">
+        {% elif wrong_guesses|length == 9 %}
+        <img src="{% static 'admin/img/mod8.png' %}" alt="structure8" class="img">
+        {% elif wrong_guesses|length == 10 %}
+        <img src="{% static 'admin/img/mod9.png' %}" alt="structure9" class="img">
+        {% elif wrong_guesses|length == 11 %}
+        <img src="{% static 'admin/img/mod10.png' %}" alt="structure10" class="img">
+        {% elif wrong_guesses|length == 12 %}
+        <img src="{% static 'admin/img/mod11.png' %}" alt="structure11" class="img">
+        {% elif wrong_guesses|length == 13 %}
+        <h4 class="title w-100 text-sorry">Sorry, Try Again!</h4>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" name="play_on" class="btn btn-outline-success">Play Again</button>
+        </form>
+        {% endif %}
   </div>
 
-  <!-- The Modal -->
+<!-- Scores Modal -->
 <div class="modal fade" id="myModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-sm-down">
     <div class="modal-content">
@@ -104,6 +112,7 @@ Zu Hause - ZHed
   </div>
 </div>
 
+<!-- Hint Display -->
   <div class="container mt-2">
     <div class="row">
         <!-- Display Hint Logic -->
@@ -115,7 +124,7 @@ Zu Hause - ZHed
       <form method="post">
         {% csrf_token %}
         <button type="submit" name="show_hint" class="btn btn-outline-dark" 
-        {% if not game_state %} disabled {% endif %}
+        {% if not gamestate %} disabled {% endif %}
         >Hint</button>
       </form>
           {% endif %}
@@ -130,8 +139,7 @@ Zu Hause - ZHed
       <!-- Score Button -->
       <form method="post">
         {% csrf_token %}
-      <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myModal" {% if game_state %} disabled {% endif %}>
-        
+      <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myModal" {% if gamestate %} disabled {% endif %}>
         Score
       </button>
     </form>
@@ -140,36 +148,21 @@ Zu Hause - ZHed
       <form method="post">
         {% csrf_token %}
       <button type="submit" name="start_game" class="btn btn-outline-dark"
-      {% if game_state %} disabled {% endif %}
-      >Start</button>
+      {% if gamestate%} disabled {% endif %}>
+      Start</button>
       </form>
 
       <!-- Pause Button -->
     <form method="post">
       {% csrf_token %}
       <button type="submit" name="pause_game" class="btn btn-outline-dark"
-      {% if not game_state %} disabled {% endif %}
-      >Pause</button>
+      {% if not gamestate %} disabled {% endif %}>
+      Pause</button>
     </form>
       
-<!-- Guess Form -->
- <form method="post" id="letter-form">
-  {% csrf_token %}
-  <input type="text" name="letter" id="letter-input" maxlength="1" style="display: none;">
-  <button type="submit" style="display: none;">Guess</button>
- </form>
 
- <!-- Display game-over message if game is lost -->
-{% if wrong_guesses >= MAX_WRONG_GUESSES %}
-<div class="alert alert-danger" role="alert">
-  <h4>Game Over!</h4>
-  <p>You've lost! The word was: <strong>{{ word }}</strong></p>
-  <a href="{% url 'zhed' %}" class="btn btn-primary">Try Again</a>
-</div>
-{% endif %}
+<!-- Exit Trigger Modal -->
 
-<!-- Exit Button with Confirmation Modal -->
-    <!-- Trigger Modal -->
     <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exitModal">Exit</button>
 
     <!-- Exit Confirmation Modal -->
@@ -201,16 +194,14 @@ Zu Hause - ZHed
 
 
 <script>
-
-// Keydown event listener for letter guesses
-document.addEventListener('keydown', function(event) {
-    if (event.key.match(/[a-zA-Z]/)) {
-        var letterInput = document.getElementById('letter-input');
-        letterInput.value = event.key.toLowerCase();
-        document.getElementById('letter-form').submit();
+        // JavaScript to handle keypress
+        document.addEventListener('keydown', function(event) {
+          let letter = event.key.toLowerCase();
+          if (/^[a-z]$/.test(letter)) {  // Ensure only letters are processed
+            document.getElementById('letter-input').value = letter;
+            document.getElementById('letter-form').submit(); // Submit the form automatically
     }
 });
-
 </script>  
 
 {% endblock %} 
