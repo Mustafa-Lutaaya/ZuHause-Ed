@@ -132,6 +132,13 @@ def zhed(request):
 
                 word_obj = Word.objects.get(word=word)  # Get the actual word object
                 player.played_words.add(word_obj)  # Store the word as played**
+
+                total_played = player.played_words.count()
+
+                if total_played % 2 == 0:
+                    player.level += 1
+                    player.save()
+                    request.session["player_level"] = player.level
                 request.session["played_words"] = list(player.played_words.values_list("id", flat=True))
             
             # Check if the game is over due to too many wrong guesses
@@ -139,6 +146,9 @@ def zhed(request):
                 zone.gamestate = False
                 zone.dormant = True
                 zone.save()
+            
+
+
             return redirect("zhed")
 
     # Show hint request handling
