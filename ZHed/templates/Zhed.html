@@ -7,17 +7,28 @@ Zu Hause - ZHed
 {% endblock %}
 
 {% block content %}
-<div class="container log-container d-flex ">
+<div class="container log-container d-flex mt-5">
   <div class="row">
     <div class="col-sm-12 bg-black">
-      <img id="logon" class="swing rounded-pill" src="{% static 'admin/img/ZHH Logo.png' %}" alt="Logo" width="150">
+      <br/>
+      <div class="col bg-black text-white">
+        <!-- <strong>
+          <div class="container mt-3">
+            {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+        </div>
+      </strong> -->
+    </div>
+      <br/>
     </div>
   </div>
 </div>
 
 <div class="container mt-2 text-center">
   <div class="row">
-      <div class="col bg-black text-white"><strong></strong></div>
       <div class="col bg-black text-white"><strong>{{ player_name }}</strong></div>
       <div class="col bg-black text-white"><strong>Level: </strong>{{ player_level  }}</div>
       <div class="col bg-black text-white"><strong>Score: </strong>{{ player_score }}</div>
@@ -26,7 +37,7 @@ Zu Hause - ZHed
 
 <div class="container-fluid bg-black text-white pt-5 text-center justify-content-center">
   <div>
-    <h4>Guess the Word:</h4>
+    <h4 {% if dormant %} hidden {% endif %} >Guess the Word:</h4>
       <p id="key-display">
       {% if gamestate %}
         {% for letter in cgw %}
@@ -42,45 +53,53 @@ Zu Hause - ZHed
 
       <div>
         {% if word and correct_guesses and word|make_list|length == correct_guesses|length %}
-        <h4 class="title w-100 text-success">Congratulations! You guessed the word!</h4>
+        <h4 class="title w-100 text-success">Congratulations!</h4>
+        <h6 class="w-100 text-success">The Word Was  "{{ word }}"</h6>
+        <h6 class="w-100 text-success">{{ meaning }}</h6>
+        <br/>
+        <h5 class="w-100 text-success">AUF DEUTSCH</h5>
+        <h6 class="w-100 text-success"> {{ translation }}</h6>
+        <h6 class="w-100 text-success"> {{ translated_definition }}</h6>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" name="start_game" class="btn btn-outline-success">Play On</button>
+        </form>
+        {% endif %}
+      </div>
+ 
+      <div {% if dormant %} hidden {% endif %}>
+        {% if wrong_guesses|length == 0 %}
+        <img src="{% static 'admin/img/mod11.png' %}" alt="structure0" class="img">
+        {% elif wrong_guesses|length == 1 %}
+        <img src="{% static 'admin/img/mod10.png' %}" alt="structure1" class="img">
+        {% elif wrong_guesses|length == 2 %}
+        <img src="{% static 'admin/img/mod9.png' %}" alt="structure2" class="img">
+        {% elif wrong_guesses|length == 3 %}
+        <img src="{% static 'admin/img/mod8.png' %}" alt="structure3" class="img">
+        {% elif wrong_guesses|length == 4 %}
+        <img src="{% static 'admin/img/mod7.png' %}" alt="structure4" class="img">
+        {% elif wrong_guesses|length == 5 %}
+        <img src="{% static 'admin/img/mod6.png' %}" alt="structure5" class="img">
+        {% elif wrong_guesses|length == 6 %}
+        <img src="{% static 'admin/img/mod5.png' %}" alt="structure6" class="img">
+        {% elif wrong_guesses|length == 7 %}
+        <img src="{% static 'admin/img/mod4.png' %}" alt="structure7" class="img">
+        {% elif wrong_guesses|length == 8 %}
+        <img src="{% static 'admin/img/mod3.png' %}" alt="structure8" class="img">
+        {% elif wrong_guesses|length == 9 %}
+        <img src="{% static 'admin/img/mod2.png' %}" alt="structure9" class="img">
+        {% elif wrong_guesses|length == 10 %}
+        <img src="{% static 'admin/img/mod1.png' %}" alt="structure10" class="img">
+        {% elif wrong_guesses|length == 11 %}
+        <img src="{% static 'admin/img/mod0.png' %}" alt="structure11" class="img">
+        {% elif wrong_guesses|length == 12 %}
+        <h4 class="title w-100 text-sorry">Sorry, Try Again!</h4>
         <form method="post">
           {% csrf_token %}
           <button type="submit" name="start_game" class="btn btn-outline-success">Play Again</button>
         </form>
         {% endif %}
-
-        {% if wrong_guesses|length == 1 %}
-        <img src="{% static 'admin/img/mod0.png' %}" alt="structure0" class="img">
-        {% elif wrong_guesses|length == 2 %}
-        <img src="{% static 'admin/img/mod1.png' %}" alt="structure1" class="img">
-        {% elif wrong_guesses|length == 3 %}
-        <img src="{% static 'admin/img/mod2.png' %}" alt="structure2" class="img">
-        {% elif wrong_guesses|length == 4 %}
-        <img src="{% static 'admin/img/mod3.png' %}" alt="structure3" class="img">
-        {% elif wrong_guesses|length == 5 %}
-        <img src="{% static 'admin/img/mod4.png' %}" alt="structure4" class="img">
-        {% elif wrong_guesses|length == 6 %}
-        <img src="{% static 'admin/img/mod5.png' %}" alt="structure5" class="img">
-        {% elif wrong_guesses|length == 7 %}
-        <img src="{% static 'admin/img/mod6.png' %}" alt="structure6" class="img">
-        {% elif wrong_guesses|length == 8 %}
-        <img src="{% static 'admin/img/mod7.png' %}" alt="structure7" class="img">
-        {% elif wrong_guesses|length == 9 %}
-        <img src="{% static 'admin/img/mod8.png' %}" alt="structure8" class="img">
-        {% elif wrong_guesses|length == 10 %}
-        <img src="{% static 'admin/img/mod9.png' %}" alt="structure9" class="img">
-        {% elif wrong_guesses|length == 11 %}
-        <img src="{% static 'admin/img/mod10.png' %}" alt="structure10" class="img">
-        {% elif wrong_guesses|length == 12 %}
-        <img src="{% static 'admin/img/mod11.png' %}" alt="structure11" class="img">
-        {% elif wrong_guesses|length == 13 %}
-        <h4 class="title w-100 text-sorry">Sorry, Try Again!</h4>
-        <form method="post">
-          {% csrf_token %}
-          <button type="submit" name="play_on" class="btn btn-outline-success">Play Again</button>
-        </form>
-        {% endif %}
-  </div>
+      </div>
 
 <!-- Scores Modal -->
 <div class="modal fade" id="myModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -117,14 +136,15 @@ Zu Hause - ZHed
     <div class="row">
         <!-- Display Hint Logic -->
         <div class="col bg-black text-warning">
-          {% if show_hint %}
+          {% if show_hint and not dormant %}
           <strong>Hint: </strong>{{ get_hint }}  
           {% else %}
         <!-- Hint Form -->
       <form method="post">
         {% csrf_token %}
         <button type="submit" name="show_hint" class="btn btn-outline-dark" 
-        {% if not gamestate %} disabled {% endif %}
+        {% if not gamestate %} disabled {% endif %} 
+        {% if dormant %} hidden {% endif %}
         >Hint</button>
       </form>
           {% endif %}

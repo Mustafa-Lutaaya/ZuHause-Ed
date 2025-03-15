@@ -53,9 +53,6 @@ def zhed(request):
     player = Player.objects.get(name=player_name)
     played_words = player.played_words.all()
     scores = list(Player.objects.order_by("-score").values("name", "score"))  # Convert to list
-    word = Word.objects.exclude(id__in=played_words.values_list("id", flat=True)).first()
-    cgw = ["__" for i in word.word]  # Create a list with underscores for each letter in the word
-
 
     # Game Start
     if "start_game" in request.POST:
@@ -77,20 +74,16 @@ def zhed(request):
             correct_guesses_count = request.session.get("correct_guesses", [])
             wrong_guesses = request.session.get ("wrong_guesses", []) # Wrong Guesses stored as an Intenger Count
         else:
-            cgw = []
-            request.session['word'] = ''
-            request.session["get_hint"] = ""
             messages.warning(request, "No new words available!")
+            zone.gamestate = False  # End game if word is fully guessed
+            zone.dormant = True
+            zone.save()
         
         request.session["wrong_guesses"] = []
         request.session["correct_guesses"] = []
         request.session["show_hint"] = False
         
         return redirect("zhed") # Reload page to reflect changes
-            
-    #     # request.session.pop("word", None)  # Clear previous word
-    #     # request.session.pop("correct_guesses", None)
-    #     # request.session.pop("wrong_guesses", None)
 
     # Guess Letter
     if "letter" in request.POST:
@@ -132,6 +125,7 @@ def zhed(request):
                 correct_guesses_count.append(word)
                 player.score += 10  # Increment the player's score
                 player.save()  # Save the updated player score
+
                 zone.gamestate = False  # End game if word is fully guessed
                 zone.dormant = True
                 zone.save()
@@ -139,7 +133,6 @@ def zhed(request):
                 word_obj = Word.objects.get(word=word)  # Get the actual word object
                 player.played_words.add(word_obj)  # Store the word as played**
                 request.session["played_words"] = list(player.played_words.values_list("id", flat=True))
-                word = request.session.get("word", "")
             
             # Check if the game is over due to too many wrong guesses
             if len(wrong_guesses) >=  MAX_WRONG_GUESSES:
@@ -172,6 +165,7 @@ def zhed(request):
     
 
     return render(request, 'Zhed.html', {
+        
         "gamestate": zone.gamestate,
         "halfgamestate": zone.halfgamestate,
         "dormant": zone.dormant,
@@ -184,5 +178,8 @@ def zhed(request):
         'get_hint': request.session.get('get_hint', ''),
         'wrong_guesses': request.session.get('wrong_guesses',[]),
         'correct_guesses': request.session.get('correct_guesses',[]),
-        'show_hint': request.session.get('show_hint', False)
+        'show_hint': request.session.get('show_hint', False),
+        'translation': request.session["translation"],
+        'meaning': request.session["meaning"],
+        'translated_definition': request.session["translated_definition"]
             })
