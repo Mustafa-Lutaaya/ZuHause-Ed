@@ -49,7 +49,7 @@ def zhed(request):
             return redirect("zhed")  # Refresh the page
     
     MAX_WRONG_GUESSES = 12  # Number of wrong attempts before game over
-    player_name = request.session.get("player_name")
+    player_name = request.session.get("player_name") 
     player = Player.objects.get(name=player_name)
     played_words = player.played_words.all()
     scores = list(Player.objects.order_by("-score").values("name", "score"))  # Convert to list
@@ -72,9 +72,9 @@ def zhed(request):
             request.session["translated_definition"] = word.translated_definition
             correct_guesses = request.session.get("correct_guesses", [])
             correct_guesses_count = request.session.get("correct_guesses", [])
-            wrong_guesses = request.session.get ("wrong_guesses", []) # Wrong Guesses stored as an Intenger Count
+            wrong_guesses = request.session.get ("wrong_guesses", []) # Wrong Guesses stored as an Integer Count
         else:
-            messages.warning(request, "No new words available!")
+            messages.warning(request, "No new words available!") # End game if word is fully guessed
             zone.gamestate = False  # End game if word is fully guessed
             zone.dormant = True
             zone.save()
@@ -152,9 +152,6 @@ def zhed(request):
                     zone.gamestate = False
                     zone.dormant = True
                     zone.save()
-                
-
-
                 return redirect("zhed")
 
     # Show hint request handling
@@ -198,4 +195,4 @@ def zhed(request):
         'meaning': request.session.get("meaning", ""),
         'translation': request.session.get("translation", ""),
         'translated_definition': request.session.get("translated_definition", ""),
-            })
+        })

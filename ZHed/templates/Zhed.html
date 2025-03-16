@@ -21,7 +21,7 @@ Zu Hause - ZHed
             {% endif %}
         </div>
       </strong> -->
-    </div>
+      </div>
       <br/>
     </div>
   </div>
@@ -42,7 +42,7 @@ Zu Hause - ZHed
       {% if gamestate %}
         {% for letter in cgw %}
           {% if letter == " " %}
-              &nbsp; <!-- Ensures space is rendered correctly -->
+              &nbsp; <!-- Ensure space is rendered correctly --> 
           {% else %}
           {{ letter }}  
           {% endif %}
@@ -101,7 +101,7 @@ Zu Hause - ZHed
 
       <div>
         {% if wrong_guesses|length == 12 %}
-        <h4 class="title w-100 text-sorry">Sorry, Try Again!</h4>
+        <h5 class="title w-100">Sorry....Try Again!</h5>
         <form method="post">
           {% csrf_token %}
           <button type="submit" name="start_game" class="btn btn-outline-success">Play Again</button>
@@ -147,6 +147,7 @@ Zu Hause - ZHed
           {% if show_hint and not dormant %}
           <strong>Hint: </strong>{{ get_hint }}  
           {% else %}
+
         <!-- Hint Form -->
       <form method="post">
         {% csrf_token %}
@@ -190,9 +191,7 @@ Zu Hause - ZHed
       
 
 <!-- Exit Trigger Modal -->
-
     <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exitModal">Exit</button>
-
     <!-- Exit Confirmation Modal -->
     <div class="modal fade" id="exitModal" tabindex="-1" aria-labelledby="exitModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-sm-down">
@@ -215,11 +214,8 @@ Zu Hause - ZHed
         </div>
       </div>
     </div>
-
     </div>
   </div>
-
-
 
 <script>
         // JavaScript to handle keypress
@@ -231,5 +227,4 @@ Zu Hause - ZHed
     }
 });
 </script>  
-
 {% endblock %} 
