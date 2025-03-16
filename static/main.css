@@ -19,7 +19,7 @@ body {
     }
   
     .button-container button {
-        padding: 10px 20px !important; /* Reduce button padding */
+        padding: 10px 10px !important; /* Reduce button padding */
         font-size: 18px !important; /* Smaller text */
     }
   

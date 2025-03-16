@@ -41,7 +41,11 @@ Zu Hause - ZHed
       <p id="key-display">
       {% if gamestate %}
         {% for letter in cgw %}
+          {% if letter == " " %}
+              &nbsp; <!-- Ensures space is rendered correctly -->
+          {% else %}
           {{ letter }}  
+          {% endif %}
         {% endfor %}
       {% endif %}
       </p>
@@ -94,7 +98,7 @@ Zu Hause - ZHed
         <img src="{% static 'admin/img/mod0.png' %}" alt="structure11" class="img">
         {% endif %}
       </div>
-      
+
       <div>
         {% if wrong_guesses|length == 12 %}
         <h4 class="title w-100 text-sorry">Sorry, Try Again!</h4>
@@ -172,7 +176,7 @@ Zu Hause - ZHed
       <form method="post">
         {% csrf_token %}
       <button type="submit" name="start_game" class="btn btn-outline-dark"
-      {% if gamestate%} disabled {% endif %}>
+      {% if gamestate %} disabled {% endif %}>
       Start</button>
       </form>
 
