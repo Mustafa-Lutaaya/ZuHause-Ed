@@ -55,8 +55,10 @@ Zu Hause - ZHed
       </form>
   </div>
 
-      <div>
-        {% if word and correct_guesses and word|make_list|length == correct_guesses|length %}
+     <div>
+        {% if word %}
+        {% for played_word in played_words %}
+        {% if played_word.word == word %}
         <h4 class="title w-100 text-success">Congratulations!</h4>
         <h6 class="w-100 text-success">The Word Was  "{{ word }}"</h6>
         <h6 class="w-100 text-success">{{ meaning }}</h6>
@@ -68,6 +70,8 @@ Zu Hause - ZHed
           {% csrf_token %}
           <button type="submit" name="start_game" class="btn btn-outline-success">Play On</button>
         </form>
+        {% endif %}
+        {% endfor %}
         {% endif %}
       </div>
  
