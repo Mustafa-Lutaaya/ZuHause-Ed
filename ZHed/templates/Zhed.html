@@ -46,7 +46,7 @@ Zu Hause - ZHed
       <!-- Form to submit guesses -->
       <form method="post" id="letter-form">
         {% csrf_token %}
-        <input type="hidden" name="letter" id="letter-input">
+        <input type="hidden" name="letter" id="letter-input" style="opacity: 5; position: absolute; z-index: -1;" autocomplete="off">
       </form>
   </div>
 
@@ -178,8 +178,8 @@ Zu Hause - ZHed
       <!-- Start Game Button -->
       <form method="post">
         {% csrf_token %}
-      <button type="submit" name="start_game" class="btn btn-outline-dark"
-      {% if gamestate %} disabled {% endif %} onclick="triggerInput()">
+      <button type="submit" name="start_game" class="btn btn-outline-dark" onclick="triggerInput()"
+      {% if gamestate %} disabled {% endif %} >
       Start</button>
       </form>
 
@@ -231,9 +231,7 @@ Zu Hause - ZHed
 function triggerInput() {
         //Hidden input field focusable and trigger for the keyboard
         var inputField = document.getElementById('letter-input');
-        inputField.type = 'text';  //  Input field visibility
         inputField.focus();        // Input field to open the keyboard
-        inputField.type = 'hidden'; // Hides the input field again
       }
 
   </script>  
