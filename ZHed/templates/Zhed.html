@@ -227,5 +227,13 @@ Zu Hause - ZHed
             document.getElementById('letter-form').submit(); // Submit the form automatically
     }
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Check if game has started
+    let letterInput = document.getElementById('letter-input');
+    // Focus on the input field to trigger the keyboard
+    letterInput.focus();
+});
+
 </script>  
 {% endblock %} 

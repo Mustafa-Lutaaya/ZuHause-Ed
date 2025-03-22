@@ -40,6 +40,7 @@ html, body {
 .image-container img {
   max-width: 100%; /* Ensure image scales to fit its container */
   height: auto; /* Maintain aspect ratio */
+  max-height: 70vh; /* Limit height to 70% of viewport height */
 }
 
 /* Styling for .img class elements (images used throughout the site) */
