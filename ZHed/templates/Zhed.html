@@ -179,8 +179,8 @@ Zu Hause - ZHed
       <form method="post">
         {% csrf_token %}
       <button type="submit" name="start_game" class="btn btn-outline-dark"
-      {% if gamestate %} disabled {% endif %} onclick="triggerKeyboard()">
-      Start</button>
+      {% if gamestate %} disabled {% endif %}>
+      Start<input hidden></button>
       </form>
 
     <!-- Pause Button -->
@@ -219,13 +219,6 @@ Zu Hause - ZHed
   </div>
 
 <script>
-
-function triggerKeyboard() {
-      // Force focus on the input field after clicking the start button
-      let letterInput = document.getElementById('letter-input');
-      letterInput.style.visibility = 'visible'; // Make the input field visible temporarily
-      letterInput.focus(); // Focus to open the keyboard on mobile
-    }
         // JavaScript to handle keypress
         document.addEventListener('keydown', function(event) {
           let letter = event.key.toLowerCase();
@@ -234,13 +227,5 @@ function triggerKeyboard() {
             document.getElementById('letter-form').submit(); // Submit the form automatically
     }
 });
-
-document.addEventListener("DOMContentLoaded", function() {
-  // Check if game has started
-    let letterInput = document.getElementById('letter-input');
-    // Focus on the input field to trigger the keyboard
-    letterInput.focus();
-});
-
-</script>  
+  </script>  
 {% endblock %} 
