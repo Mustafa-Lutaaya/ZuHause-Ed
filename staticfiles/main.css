@@ -1,51 +1,101 @@
-body {
-    background-color: black;  /* Black background */
-    color: #ffffff;  /* White text color for better contrast */
-  }
-  
-  .hidden {
-    visibility: hidden;  /* Makes the button invisible but keeps its layout */
-  }
+/* General Styles for html and body */
+html, body {
+  background-color: black;  /* Black background for the entire page */
+  color: #ffffff;  /* White text color for better contrast against the black background */
+  overflow: hidden; /* Prevents scrolling, ensuring a clean, fixed view */
+  height: 100vh; /* Restricts the body height to the full viewport height */
+  width: 100vw; /* Ensures full width of the viewport */
+}
 
-  @media (max-width: 1050px) { 
-    .logo-container img {
-        max-width: 100px !important; /* Smaller logo */
-    }
-    .log-container img {
-      max-width: 100px !important; /* Smaller logo */
-  }
-    .button-container {
-        top: 50% !important; /* Push the button slightly lower */
-    }
-  
-    .button-container button {
-        padding: 10px 20px !important; /* Reduce button padding */
-        font-size: 18px !important; /* Smaller text */
-    }
-  
-    .footer-container {
-        font-size: 15px !important; /* Even smaller font */
-    }
-    
+/* Hides elements that have the "hidden" class */
+.hidden {
+  visibility: hidden;  /* Makes the element invisible but keeps its layout in place */
+}
 
+/* Keyframe animation for swinging the logo */
+@keyframes swing {
+  0% {
+    transform: rotate(-30deg); /* Start at left */
   }
-  
-  
-  /* Keyframe animation for swinging the logo */
-  @keyframes swing {
-    0% {
-      transform: rotate(-30deg); /* Start at left */
-    }
-    50% {
-      transform: rotate(30deg); /* Swing to the right */
-    }
-    100% {
-      transform: rotate(-30deg); /* Swing back to the left */
-    }
+  50% {
+    transform: rotate(30deg); /* Swing to the right */
   }
-  
-  /* Apply animation and set the pivot to the top */
+  100% {
+    transform: rotate(-30deg); /* Swing back to the left */
+  }
+}
+
+/* Logo container animation */
+.logo-container img {
+  animation: swing 2s ease-in-out infinite; /* Apply infinite swing animation */
+  transform-origin: top center; /* Set pivot point to top-center for swinging effect */
+}
+
+/* Image container styling for responsive scaling */
+.image-container {
+  width: 100%; /* Ensure full width */
+  text-align: center; /* Center align the images */
+}
+
+.image-container img {
+  max-width: 100%; /* Ensure image scales to fit its container */
+  height: auto; /* Maintain aspect ratio */
+}
+
+/* Styling for .img class elements (images used throughout the site) */
+.img {
+  width: 100%;  /* Ensure the image scales with its container */
+  max-width: 400px;  /* Limit max size for large screens */
+  height: auto;  /* Maintain aspect ratio */
+  display: block;  /* Ensure the image doesn't have extra space below */
+  margin: 0 auto;  /* Center the image */
+}
+
+/* Mobile/Tablet Responsiveness */
+@media (max-width: 1050px) { 
+  /* Adjust the logo size for smaller screens */
   .logo-container img {
-    animation: swing 2s ease-in-out infinite; /* Infinite swing animation */
-    transform-origin: top center; /* Pivot from top */
+    max-width: 100px !important; /* Smaller logo size for smaller screens */
   }
+
+  .log-container img {
+    max-width: 100px !important; /* Apply the same to images within log-container */
+  }
+
+  /* Button container adjustments for better mobile layout */
+  .button-container {
+    top: 50% !important; /* Slightly push the button lower */
+  }
+
+  /* Adjust button appearance for smaller screens */
+  .button-container button {
+    padding: 10px 10px !important; /* Reduce button padding */
+    font-size: 18px !important; /* Make button text smaller */
+  }
+
+  /* Footer font-size adjustment */
+  .footer-container {
+    font-size: 15px !important; /* Make footer text smaller */
+  }
+
+  /* Make the images smaller for smaller screens */
+  .img {
+    max-width: 300px !important; /* Scale down images for smaller screens */
+  }
+}
+
+/* Tablet responsiveness */
+@media (max-width: 768px) {
+  /* Make images smaller for tablet screens */
+  .img {
+    max-width: 200px !important; /* Even smaller image size for tablet screens */
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  /* Make images smaller for mobile screens */
+  .img {
+    max-width: 150px !important; /* Mobile-friendly image size */
+  }
+}

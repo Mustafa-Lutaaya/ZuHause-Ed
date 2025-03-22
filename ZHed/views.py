@@ -15,10 +15,10 @@ def main(request):
 """Handles game logic including login, gameplay, and session management."""
 def zhed(request):
    
-   # Ensure game state is properly initialized
+   # Ensures game state is properly initialized
     zone, _ = States.objects.get_or_create(id=1)
 
-   # Ensure session variables are properly initialized
+   # Ensures session variables are properly initialized
     if "gamestate" not in request.session:
         request.session["gamestate"] = zone.gamestate
     if "halfgamestate" not in request.session:
@@ -26,7 +26,7 @@ def zhed(request):
     if "dormant" not in request.session:
         request.session["dormant"] = zone.dormant
    
-    # Handle Player Login
+    # Handles Player Login
     if request.method == "POST":
         if "name" in request.POST:
             player_name = request.POST.get("name").strip()
@@ -36,31 +36,31 @@ def zhed(request):
             
             player, created = Player.objects.get_or_create(name=player_name)  # Create or fetch player
 
-            # Store player in session
+            # Stores player in session
             request.session["player_name"] = player.name  
             request.session["player_score"] = player.score
             request.session["player_level"] = player.level
             request.session['show_hint'] = False   # Hint is hidden by default
 
-            # Reset game state
+            # Resets game state
             zone.gamestate = False
             zone.halfgamestate = False
             zone.dormant = False
             zone.save()
 
-            # Display appropriate welcome message
+            # Displays appropriate welcome message
             messages.success(request, f"Welcome, {player_name}!" if created else f"Welcome back, {player_name}!")
             return redirect("zhed")  # Refresh the page
     
     MAX_WRONG_GUESSES = 12  # Number of wrong attempts before game over
 
-    # Fetch player data
+    # Fetches player data
     player_name = request.session.get("player_name") 
     player = Player.objects.get(name=player_name)
     played_words = player.played_words.all()
     scores = list(Player.objects.order_by("-score").values("name", "score"))  # Convert scores  to list
 
-     # Start new game
+     # Starts new game
     if "start_game" in request.POST:
         request.session["played_words"] = list(player.played_words.values_list("id", flat=True))  # Stores list of word IDs
         zone.gamestate = True
@@ -68,7 +68,7 @@ def zhed(request):
         zone.dormant = False
         zone.save()
         
-        # Select a new word (excluding already played words)
+        # Selects a new word (excluding already played words)
         word = Word.objects.exclude(id__in=played_words.values_list("id", flat=True)).first()
 
         if word:
@@ -92,7 +92,7 @@ def zhed(request):
         
         return redirect("zhed") # Reload page to reflect changes
 
-    # Handle letter guesses
+    # Handles letter guesses
     if zone.gamestate:
         if "letter" in request.POST:
             word = request.session.get("word", "")
@@ -108,7 +108,7 @@ def zhed(request):
                     if letter not in correct_guesses:
                         correct_guesses.append(letter)
                     
-                    # Reveal one instance of the letter
+                    # Reveals one instance of the letter
                     for index, char in enumerate(word):
                         if char == letter and cgw[index] == "__":
                             cgw[index] = letter 
@@ -117,7 +117,7 @@ def zhed(request):
                         if char == " ":
                             cgw[index] = " "
         
-                    request.session["cgw"] = cgw  # Store the updated cgw in the session
+                    request.session["cgw"] = cgw  # Stores the updated cgw in the session
                     request.session["correct_guesses"] = correct_guesses  
                     messages.success(request, f"Great Guess, {player_name}!")
 
@@ -128,14 +128,14 @@ def zhed(request):
                     if len(wrong_guesses) == (MAX_WRONG_GUESSES -5):
                         messages.success(request, f"Time's Almost Up, {player_name}!")
 
-               # Update session data 
+               # Updates session data 
                 request.session["correct_guesses"] = correct_guesses
                 request.session["wrong_guesses"] = wrong_guesses
                 
-               # Check if the word is fully guessed (win condition)
+               # Check sif the word is fully guessed (win condition)
                 if all(cgw[i] != "__" for i in range(len(word))):
-                    word_obj = Word.objects.get(word=word)  # Get the actual word object
-                    player.played_words.add(word_obj)  # Store the word as played**
+                    word_obj = Word.objects.get(word=word)  # Gets the actual word object
+                    player.played_words.add(word_obj)  # Stores the word as played**
 
                     # Award points based on word length
                     if len(word) > 10:

@@ -10,23 +10,13 @@ Zu Hause - ZHed
 <div class="container log-container d-flex mt-5">
   <div class="row">
     <div class="col-sm-12 bg-black">
-      <br/>
-      <div class="col bg-black text-white">
-        <!-- <strong>
-          <div class="container mt-3">
-            {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-            {% endif %}
-        </div>
-      </strong> -->
-      </div>
-      <br/>
+
     </div>
   </div>
 </div>
 
+
+<!-- Player info display, player name, level, and score -->
 <div class="container mt-2 text-center">
   <div class="row">
       <div class="col bg-black text-white"><strong>{{ player_name }}</strong></div>
@@ -35,47 +25,54 @@ Zu Hause - ZHed
     </div>
 </div>
 
+<!-- Guess the word and game status -->
 <div class="container-fluid bg-black text-white pt-5 text-center justify-content-center">
   <div>
+    <!-- Only show the "Guess the Word" header if 'dormant' is not set -->
     <h4 {% if dormant %} hidden {% endif %} >Guess the Word:</h4>
       <p id="key-display">
       {% if gamestate %}
+       <!-- Display the current word with spaces for unknown letters -->
         {% for letter in cgw %}
           {% if letter == " " %}
-              &nbsp; <!-- Ensure space is rendered correctly --> 
+              &nbsp; <!-- Render space correctly --> 
           {% else %}
           {{ letter }}  
           {% endif %}
         {% endfor %}
       {% endif %}
       </p>
+
+      <!-- Form to submit guesses -->
       <form method="post" id="letter-form">
         {% csrf_token %}
         <input type="hidden" name="letter" id="letter-input">
       </form>
   </div>
 
-     <div>
+     <div> 
+       <!-- Check if the word has been guessed correctly -->
         {% if word %}
         {% for played_word in played_words %}
         {% if played_word.word == word %}
-        <h4 class="title w-100 text-success">Congratulations!</h4>
-        <h6 class="w-100 text-success">The Word Was  "{{ word }}"</h6>
-        <h6 class="w-100 text-success">{{ meaning }}</h6>
+        <h4 class="title w-100 text-warning">Congratulations!</h4>
+        <h6 class="w-100 text-warning">The Word Was  "{{ word }}"</h6>
+        <h6 class="w-100 text-warning">{{ meaning }}</h6>
         <br/>
-        <h5 class="w-100 text-success">AUF DEUTSCH</h5>
-        <h6 class="w-100 text-success"> {{ translation }}</h6>
-        <h6 class="w-100 text-success"> {{ translated_definition }}</h6>
+        <h5 class="w-100 text-warning">AUF DEUTSCH</h5>
+        <h6 class="w-100 text-warning"> {{ translation }}</h6>
+        <h6 class="w-100 text-warning"> {{ translated_definition }}</h6>
         <form method="post">
           {% csrf_token %}
-          <button type="submit" name="start_game" class="btn btn-outline-success">Play On</button>
+          <button type="submit" name="start_game" class="btn btn-outline-white">Play On</button>
         </form>
         {% endif %}
         {% endfor %}
         {% endif %}
       </div>
- 
-      <div {% if dormant %} hidden {% endif %}>
+
+       <!-- Display the house images based on the number of wrong guesses -->
+      <div class="image-container" {% if dormant %} hidden {% endif %}>
         {% if wrong_guesses|length == 0 %}
         <img src="{% static 'admin/img/mod11.png' %}" alt="structure0" class="img">
         {% elif wrong_guesses|length == 1 %}
@@ -103,17 +100,19 @@ Zu Hause - ZHed
         {% endif %}
       </div>
 
+      <!-- If the maximum number of wrong guesses is reached, show "Try Again" -->
       <div>
         {% if wrong_guesses|length == 12 %}
         <h5 class="title w-100">Sorry....Try Again!</h5>
         <form method="post">
           {% csrf_token %}
-          <button type="submit" name="start_game" class="btn btn-outline-success">Play Again</button>
+          <button type="submit" name="start_game" class="btn btn-outline-white">Play Again</button>
         </form>
         {% endif %}
       </div>
 
-<!-- Scores Modal -->
+
+<!-- Modal for the leaderboard -->
 <div class="modal fade" id="myModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-sm-down">
     <div class="modal-content">
@@ -143,16 +142,15 @@ Zu Hause - ZHed
   </div>
 </div>
 
-<!-- Hint Display -->
+
+  <!-- Hint Section -->
   <div class="container mt-2">
     <div class="row">
-        <!-- Display Hint Logic -->
         <div class="col bg-black text-warning">
           {% if show_hint and not dormant %}
           <strong>Hint: </strong>{{ get_hint }}  
           {% else %}
-
-        <!-- Hint Form -->
+    <!-- Hint button -->
       <form method="post">
         {% csrf_token %}
         <button type="submit" name="show_hint" class="btn btn-outline-dark" 
@@ -165,11 +163,11 @@ Zu Hause - ZHed
       </div>
 </div>
 
-<!-- Buttons -->
+  <!-- Game Control Buttons -->
   <div class="container mt-4 d-flex justify-content-center">
     <div class="btn-group gap-3">
 
-      <!-- Score Button -->
+     <!-- Score Button (Modal) -->
       <form method="post">
         {% csrf_token %}
       <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myModal" {% if gamestate %} disabled {% endif %}>
@@ -177,7 +175,7 @@ Zu Hause - ZHed
       </button>
     </form>
 
-      <!-- Start Button -->
+      <!-- Start Game Button -->
       <form method="post">
         {% csrf_token %}
       <button type="submit" name="start_game" class="btn btn-outline-dark"
@@ -185,7 +183,7 @@ Zu Hause - ZHed
       Start</button>
       </form>
 
-      <!-- Pause Button -->
+    <!-- Pause Button -->
     <form method="post">
       {% csrf_token %}
       <button type="submit" name="pause_game" class="btn btn-outline-dark"
@@ -193,8 +191,7 @@ Zu Hause - ZHed
       Pause</button>
     </form>
       
-
-<!-- Exit Trigger Modal -->
+<!-- Exit Button (Modal Trigger) -->
     <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exitModal">Exit</button>
     <!-- Exit Confirmation Modal -->
     <div class="modal fade" id="exitModal" tabindex="-1" aria-labelledby="exitModalLabel" aria-hidden="true">
@@ -225,7 +222,7 @@ Zu Hause - ZHed
         // JavaScript to handle keypress
         document.addEventListener('keydown', function(event) {
           let letter = event.key.toLowerCase();
-          if (/^[a-z]$/.test(letter)) {  // Ensure only letters are processed
+          if (/^[a-z]$/.test(letter)) {  // Only process letter keys
             document.getElementById('letter-input').value = letter;
             document.getElementById('letter-form').submit(); // Submit the form automatically
     }
