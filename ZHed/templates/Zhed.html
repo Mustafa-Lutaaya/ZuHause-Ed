@@ -179,8 +179,8 @@ Zu Hause - ZHed
       <form method="post">
         {% csrf_token %}
       <button type="submit" name="start_game" class="btn btn-outline-dark"
-      {% if gamestate %} disabled {% endif %}>
-      Start<input hidden></button>
+      {% if gamestate %} disabled {% endif %} onclick="triggerInput()">
+      Start</button>
       </form>
 
     <!-- Pause Button -->
@@ -227,5 +227,14 @@ Zu Hause - ZHed
             document.getElementById('letter-form').submit(); // Submit the form automatically
     }
 });
+
+function triggerInput() {
+        //Hidden input field focusable and trigger for the keyboard
+        var inputField = document.getElementById('letter-input');
+        inputField.type = 'text';  //  Input field visibility
+        inputField.focus();        // Input field to open the keyboard
+        inputField.type = 'hidden'; // Hides the input field again
+      }
+
   </script>  
 {% endblock %} 
