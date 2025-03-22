@@ -29,7 +29,9 @@ Zu Hause - ZHed
 <div class="container-fluid bg-black text-white pt-5 text-center justify-content-center">
   <div>
     <!-- Only show the "Guess the Word" header if 'dormant' is not set -->
+    <input class="guessInput"  placeholder="Tap To Start Guessing" >
     <h4 {% if dormant %} hidden {% endif %} >Guess the Word:</h4>
+    
       <p id="key-display">
       {% if gamestate %}
        <!-- Display the current word with spaces for unknown letters -->
@@ -46,7 +48,7 @@ Zu Hause - ZHed
       <!-- Form to submit guesses -->
       <form method="post" id="letter-form">
         {% csrf_token %}
-        <input type="hidden" name="letter" id="letter-input" style="opacity: 5; position: absolute; z-index: -1;" autocomplete="off">
+        <input type="hidden" name="letter" id="letter-input">
       </form>
   </div>
 
@@ -178,7 +180,7 @@ Zu Hause - ZHed
       <!-- Start Game Button -->
       <form method="post">
         {% csrf_token %}
-      <button type="submit" name="start_game" class="btn btn-outline-dark" onclick="triggerInput()"
+      <button type="submit" name="start_game" class="btn btn-outline-dark"
       {% if gamestate %} disabled {% endif %} >
       Start</button>
       </form>
@@ -227,12 +229,6 @@ Zu Hause - ZHed
             document.getElementById('letter-form').submit(); // Submit the form automatically
     }
 });
-
-function triggerInput() {
-        //Hidden input field focusable and trigger for the keyboard
-        var inputField = document.getElementById('letter-input');
-        inputField.focus();        // Input field to open the keyboard
-      }
 
   </script>  
 {% endblock %} 

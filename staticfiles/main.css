@@ -22,14 +22,13 @@ body {
     }
   
     .button-container button {
-        padding: 10px 20px !important; /* Reduce button padding */
+        padding: 10px 10px !important; /* Reduce button padding */
         font-size: 18px !important; /* Smaller text */
     }
   
     .footer-container {
         font-size: 15px !important; /* Even smaller font */
     }
-    
   }
 
     /* Tablet responsiveness */
@@ -68,3 +67,15 @@ body {
     animation: swing 2s ease-in-out infinite; /* Infinite swing animation */
     transform-origin: top center; /* Pivot from top */
   }
+
+  .guessInput {
+    display: none; /* Hidden by default */
+    background-color: grey;
+    font-size: 10px;
+    padding: 5px;
+    width: 50%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+
