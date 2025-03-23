@@ -184,6 +184,9 @@ Zu Hause - ZHed
       Start</button>
       </form>
 
+      <!-- Hidden input to show the virtual keyboard -->
+    <input type="text" id="keyboardInput" placeholder="Tap to Start" style="display:none;" />
+
     <!-- Pause Button -->
     <form method="post">
       {% csrf_token %}
