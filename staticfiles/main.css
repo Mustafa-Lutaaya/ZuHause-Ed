@@ -68,14 +68,4 @@ body {
     transform-origin: top center; /* Pivot from top */
   }
 
-  .guessInput {
-
-    background-color: grey;
-    font-size: 10px;
-    padding: 5px;
-    width: 50%;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-
 

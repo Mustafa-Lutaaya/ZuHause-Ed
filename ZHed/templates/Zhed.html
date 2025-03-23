@@ -29,9 +29,8 @@ Zu Hause - ZHed
 <div class="container-fluid bg-black text-white pt-5 text-center justify-content-center">
   <div>
     <!-- Only show the "Guess the Word" header if 'dormant' is not set -->
-    <input class="guessInput" name="tater" type="text"  placeholder="Tap To Start Guessing" >
-    <h4 {% if dormant %} hidden {% endif %} >Guess the Word:</h4>
     
+    <h4 {% if dormant %} hidden {% endif %} >Guess the Word:</h4>
       <p id="key-display">
       {% if gamestate %}
        <!-- Display the current word with spaces for unknown letters -->
@@ -220,6 +219,8 @@ Zu Hause - ZHed
     </div>
   </div>
 
+  <div id="keyboardContainer"></div>
+
 <script>
         // JavaScript to handle keypress
         document.addEventListener('keydown', function(event) {
@@ -229,6 +230,29 @@ Zu Hause - ZHed
             document.getElementById('letter-form').submit(); // Submit the form automatically
     }
 });
+
+let keyboard;
+
+        document.getElementById("startButton").addEventListener("click", function() {
+            if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                let keyboardContainer = document.getElementById("keyboardContainer");
+                
+                // Create keyboard div if not exists
+                if (!keyboard) {
+                    keyboard = new SimpleKeyboard.default({
+                        onChange: input => console.log("Typed:", input),
+                        layout: {
+                            default: ["1 2 3 4 5 6 7 8 9 0", "q w e r t y u i o p", "a s d f g h j k l", "z x c v b n m {bksp}", "{space}"]
+                        }
+                    });
+                } 
+
+                // Toggle visibility by modifying inline styles
+                keyboardContainer.style.display = keyboardContainer.style.display === "none" ? "block" : "none";
+            } else {
+                alert("This feature is only available on mobile devices.");
+            }
+        });
 
   </script>  
 {% endblock %} 
