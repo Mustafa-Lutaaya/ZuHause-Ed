@@ -1,5 +1,5 @@
 
-ZuHause ED Web App Edition
+ZuHause-ED: The Web App Edition
 
 
 ![ZHH Logo](https://github.com/user-attachments/assets/bae85ca9-0fbe-4b44-a823-a248540d3dd0)
@@ -27,9 +27,6 @@ TECH STACK:
 3. Database: SQL 
 
 4. Deployment: Hosted on Render
-
-
-
 
 
 
