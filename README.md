@@ -1,6 +1,10 @@
 
 ZuHause ED Web App Edition
 
+
+![ZHH Logo](https://github.com/user-attachments/assets/bae85ca9-0fbe-4b44-a823-a248540d3dd0)
+
+
 Link: https://zuhause-ed.onrender.com
 
 ZuHause ED is an enhanced web version of ZuHause50, developed with Django for backend processing and Bootstrap for a responsive front-end. 
