@@ -47,6 +47,30 @@ body {
       }
     }
     
+    .custom-login-btn:hover {
+    color: #FF007F !important;
+    border-color: #FF007F !important;
+  }
+
+    .fixed-box {
+      position: fixed; /* Keeps the element fixed in the viewport regardless of scrolling */
+      top: 50%; /* Positions the top edge at 50% of the viewport height */
+      left: 50%; /* Positions the left edge at 50% of the viewport width */
+      transform: translate(-50%, -50%); /* Shifts the element back by 50% of its own width and height to center it */
+      width: 50px;  /* Sets fixed width */
+      height: 50px; /* Sets fixed height */
+      padding: 10px; /* Adds inner spacing */
+      z-index: 1050; /* Ensures it appears above most other elements */
+      text-align: center; /* Center-aligns text inside the box */
+      border: 2px solid #FF00BF;  /* Adds a solid pink border */
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(255, 0, 191, 0.5); /* Adds a glowing pink shadow for visual effect */
+  }
+
+    .fixed-box:hover {
+      color: #FF007F !important;
+      border-color: #FF007F !important;
+    }
   
   
   /* Keyframe animation for swinging the logo */

@@ -7,23 +7,30 @@ Zu Hause - ZHed
 {% endblock %}
 
 {% block content %}
-<div class="container log-container d-flex mt-5">
-  <div class="row">
-    <div class="col-sm-12 bg-black">
-
+{% if messages %}
+    <div class="col-12 d-flex justify-content-center">
+        {% for message in messages %}
+        <div id="alertMessage"
+             class="alert alert-sm fs-6 text-center alert-dismissible fade show
+             {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}"
+             role="alert"
+             style="max-width: 500px;">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
     </div>
-  </div>
-</div>
-
+{% endif %}
 
 <!-- Player info display, player name, level, and score -->
-<div class="container mt-2 text-center">
+<div class="container mt-5 text-center">
   <div class="row">
       <div class="col bg-black text-white"><strong>{{ player_name }}</strong></div>
       <div class="col bg-black text-white"><strong>Level: </strong>{{ player_level  }}</div>
       <div class="col bg-black text-white"><strong>Score: </strong>{{ player_score }}</div>
     </div>
-</div>
+</div>    
+
 
 <!-- Guess the word and game status -->
 <div class="container-fluid bg-black text-white pt-5 text-center justify-content-center">
@@ -56,22 +63,25 @@ Zu Hause - ZHed
         {% if word %}
         {% for played_word in played_words %}
         {% if played_word.word == word %}
-        <h4 class="title w-100 text-warning">Congratulations!</h4>
-        <h6 class="w-100 text-warning">The Word Was  "{{ word }}"</h6>
-        <h6 class="w-100 text-warning">{{ meaning }}</h6>
+        <h4 class="title w-100 text-warning">CONGRAGULATIONS</h4>
+        <br/>
+        <p class="w-100 text-warning">The word was <strong>"{{ word }}"</strong></p>
+        <p class="w-100 text-warning">{{ meaning }}</p>
         <br/>
         <h5 class="w-100 text-warning">AUF DEUTSCH</h5>
-        <h6 class="w-100 text-warning"> {{ translation }}</h6>
-        <h6 class="w-100 text-warning"> {{ translated_definition }}</h6>
+        <br/>
+        <p class="w-100 text-warning"> {{ translation }}</p>
+        <p class="w-100 text-warning"> {{ translated_definition }}</p>
+        <br/>
         <form method="post">
           {% csrf_token %}
-          <button type="submit" name="start_game" class="btn btn-outline-white">Play On</button>
+          <button type="submit" name="start_game"  class="btn btn-outline btn-md custom-login-btn" style="color:#FF00BF; border-color:#FF00BF;">Play On</button>
         </form>
         {% endif %}
         {% endfor %}
         {% endif %}
       </div>
-
+      
        <!-- Display the house images based on the number of wrong guesses -->
       <div class="image-container" {% if dormant %} hidden {% endif %}>
         {% if wrong_guesses|length == 0 %}
@@ -104,10 +114,14 @@ Zu Hause - ZHed
       <!-- If the maximum number of wrong guesses is reached, show "Try Again" -->
       <div>
         {% if wrong_guesses|length == 12 %}
-        <h5 class="title w-100">Sorry....Try Again!</h5>
+        <h4 class="title w-100">Wheeeewww 😓</h4>
+        <br/>
+        <h5 class="title w-100">That was a tough one! <strong>{{ player_name }}</strong></h5>
+        <br/>
+        <br/>
         <form method="post">
           {% csrf_token %}
-          <button type="submit" name="start_game" class="btn btn-outline-white">Play Again</button>
+          <button type="submit" name="start_game" class="btn btn-outline btn-md custom-login-btn" style="color:#FF00BF; border-color:#FF00BF;">Try Again</button>
         </form>
         {% endif %}
       </div>
@@ -163,14 +177,14 @@ Zu Hause - ZHed
   <!-- Hint Section -->
   <div class="container mt-2">
     <div class="row">
-        <div class="col bg-black text-warning">
+        <div class="col bg-black text-white">
           {% if show_hint and not dormant %}
           <strong>Hint: </strong>{{ get_hint }}  
           {% else %}
     <!-- Hint button -->
       <form method="post">
         {% csrf_token %}
-        <button type="submit" name="show_hint" class="btn btn-outline-dark" 
+        <button type="submit" name="show_hint" class="btn btn-outline btn-md custom-login-btn" style="color:#FF00BF; border-color:#FF00BF;" 
         {% if not gamestate %} disabled {% endif %} 
         {% if dormant %} hidden {% endif %}
         >Hint</button>
@@ -187,30 +201,43 @@ Zu Hause - ZHed
      <!-- Score Button (Modal) -->
       <form method="post">
         {% csrf_token %}
-      <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#myModal" {% if gamestate %} disabled {% endif %}>
+      <button type="button" class="btn btn-outline btn-md custom-login-btn" style="color:#FF00BF; border-color:#FF00BF;" data-bs-toggle="modal" data-bs-target="#myModal" {% if gamestate %} disabled {% endif %}>
         Score
       </button>
     </form>
-
-      <!-- Start Game Button -->
-      <form method="post">
-        {% csrf_token %}
-      <button type="submit" name="start_game" class="btn btn-outline-dark"
-      {% if gamestate %} disabled {% endif %} >
-      Start</button>
-      </form>
-
-      <!-- Hidden input to show the virtual keyboard -->
-    <input type="text" id="keyboardInput" placeholder="Tap to Start" style="display:none;" />
-
-    <!-- Pause Button -->
+    
+    <!-- Start Game Button -->
+    {% if not gamestate and not halfgamestate and not dormant %}
     <form method="post">
       {% csrf_token %}
-      <button type="submit" name="pause_game" class="btn btn-outline-dark"
-      {% if not gamestate %} disabled {% endif %}>
-      Pause</button>
+      <button type="submit" name="start_game" class="btn btn-outline btn-md custom-login-btn"
+              style="color:#FF00BF; border-color:#FF00BF;">
+        Start
+      </button>
     </form>
+    {% endif %}
 
+    <!-- Resume Game Button (Only when paused) -->
+    {% if halfgamestate %}
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" name="resume_game" class="btn btn-outline btn-md custom-login-btn"
+              style="color:#FF00BF; border-color:#FF00BF;">
+        Resume
+      </button>
+    </form>
+    {% endif %}
+
+    <!-- Pause Button (Only when playing) -->
+    {% if gamestate %}
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" name="pause_game" class="btn btn-outline btn-md custom-login-btn"
+              style="color:#FF00BF; border-color:#FF00BF;">
+        Pause
+      </button>
+    </form>
+    {% endif %}
       
 <!-- Exit Button (Modal Trigger) -->
     <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exitModal">Exit</button>

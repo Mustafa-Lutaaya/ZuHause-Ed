@@ -6,6 +6,22 @@ Zu Hause
 {% endblock %}
 
 {% block content %}
+{% if messages %}
+    <div class="col-12 d-flex justify-content-center">
+        {% for message in messages %}
+        <div id="alertMessage"
+             class="alert alert-sm fs-6 text-center alert-dismissible fade show
+             {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}"
+             role="alert"
+             style="max-width: 500px;">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
 <!-- Logo Section: Centered Logo -->
 <div class="container logo-container mt-1 d-flex justify-content-center">
   <div class="row">
@@ -23,14 +39,15 @@ Zu Hause
   </div>
 </div>
 
+<div class="fixed-box mt-5" type="button" data-bs-toggle="modal" data-bs-target="#myModal">
+    <h6></h6>
+</div>
+
 <!-- Start Button Section: Centered 'Start' Button -->
   <div class="container button-container mt-5 pt-5 d-flex justify-content-center">
     <div class="row">
       <div class="col-sm-12 bg-black py-5">
          <!-- Button to trigger the modal where user enters their name -->
-        <button type="button" class="btn btn-outline-dark btn-lg" data-bs-toggle="modal" data-bs-target="#myModal">
-          Start
-        </button>
       </div>
     </div>
   </div>
@@ -44,6 +61,7 @@ Zu Hause
       <!-- Modal Header -->
       <div class="modal-header bg-black d-flex text-center w-100">
         <h4 class="modal-title w-100">WILKOMEN ZUHAUSE </h4>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
       <!-- Modal Body -->
@@ -52,15 +70,9 @@ Zu Hause
           {% csrf_token %}
           <h5></h5>
           <input type="text" name="name" class="form-control mb-3 text-center" placeholder="Enter Your Name Here & Press Play" style="max-width: 80%;">
-          <button type="submit" class="btn btn-outline-dark btn-md">Play</button>
+          <button type="submit" class="btn btn-outline btn-md custom-login-btn" style="color:#FF00BF; border-color:#FF00BF;">Play</button>
         </form>
       </div>
-
-      <!-- Modal Footer -->
-      <div class="modal-footer bg-black d-flex justify-content-center w-100"> 
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-      </div>
-
     </div>
   </div>
 </div>

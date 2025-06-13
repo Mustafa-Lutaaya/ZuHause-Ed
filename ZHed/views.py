@@ -175,6 +175,14 @@ def zhed(request):
         zone.save()
         request.session['show_hint'] = False  
         return redirect("zhed") 
+    
+    # Game Resume
+    if "resume_game" in request.POST:
+        zone.gamestate = True
+        zone.halfgamestate = False
+        zone.save()
+        return redirect("zhed")
+
 
     # Ensure player is logged for updated diplays
     player_name = request.session.get("player_name")
